@@ -133,24 +133,14 @@ If you're on Windows then use a semicolon ; instead of the colon :
 
 #### Compile & Run the Java Classes
 
-The source files can be compiled as follows. 
+The project can be compiled as follows.
 
-Compile the sources: `javac -d <CLASS> -cp "<LIB>/*" <SRC>/*.java`
-
-Note: The class files are generated in a directory hierarchy which reflects the given package structure: `<CLASS>/swisscom/com/ais/itext/*.class`
+Compile the sources: `mvn clean package`
 
 The compiled application can be run as follows.
 
-Run the application (Unix/OSX):
-`java -cp "<CLASS>:<LIB>/*" com.swisscom.ais.itext.SignPDF`
-
-Run the application (Unix/OSX) with custom path to the properties file:
-`java -DpropertyFile.path=<CFG> -cp "<CLASS>:<LIB>/*" com.swisscom.ais.itext.SignPDF`
-
-Run the application (Unix/OSX) with DEBUG enabled:
-`java -Djavax.net.debug=all -Djava.security.debug=certpath -cp "<CLASS>:<LIB>/*" com.swisscom.ais.itext.SignPDF`
-
-If you're on Windows then use a semicolon ; instead of the colon : 
+Run the application:
+`java -jar target/itext-ais-1.0-SNAPSHOT-jar-with-dependencies.jar`
 
 #### JavaDoc
 
