@@ -13,43 +13,44 @@ import java.util.HashMap;
 public class EmptySigner {
 
     public static void main(String[] args) throws IOException, DocumentException {
-        String inputFilePath = args[0];
 
-        PdfReader reader = new PdfReader(inputFilePath);
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        for (String filename : args) {
+            PdfReader reader = new PdfReader(filename);
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
-        PdfSignature pdfSignature = new PdfSignature(
-                PdfName.ADOBE_PPKLITE,
-                PdfName.ADBE_PKCS7_DETACHED
-        );
+            PdfSignature pdfSignature = new PdfSignature(
+                    PdfName.ADOBE_PPKLITE,
+                    PdfName.ADBE_PKCS7_DETACHED
+            );
 
-        PdfStamper pdfStamper = PdfStamper.createSignature(reader, byteArrayOutputStream, '\0');
-        PdfSignatureAppearance pdfSignatureAppearance = pdfStamper
-                .getSignatureAppearance();
-        pdfSignature.setReason(null);
-        pdfSignature.setLocation(null);
-        pdfSignature.setContact(null);
-        pdfSignature.setDate(new PdfDate());
-        pdfSignatureAppearance.setCryptoDictionary(pdfSignature);
+            PdfStamper pdfStamper = PdfStamper.createSignature(reader, byteArrayOutputStream, '\0');
+            PdfSignatureAppearance pdfSignatureAppearance = pdfStamper
+                    .getSignatureAppearance();
+            pdfSignature.setReason(null);
+            pdfSignature.setLocation(null);
+            pdfSignature.setContact(null);
+            pdfSignature.setDate(new PdfDate());
+            pdfSignatureAppearance.setCryptoDictionary(pdfSignature);
 
-        HashMap<PdfName, Integer> exc = new HashMap<PdfName, Integer>();
-        exc.put(PdfName.CONTENTS, 44002);
-        pdfSignatureAppearance.preClose(exc);
+            HashMap<PdfName, Integer> exc = new HashMap<PdfName, Integer>();
+            exc.put(PdfName.CONTENTS, 44002);
+            pdfSignatureAppearance.preClose(exc);
 
-        PdfLiteral pdfLiteral = (PdfLiteral) pdfSignature.get(PdfName.CONTENTS);
+            PdfLiteral pdfLiteral = (PdfLiteral) pdfSignature.get(PdfName.CONTENTS);
 
-        byte[] outc = new byte[(pdfLiteral.getPosLength() - 2) / 2];
-        Arrays.fill(outc, (byte) 0);
+            byte[] outc = new byte[(pdfLiteral.getPosLength() - 2) / 2];
+            Arrays.fill(outc, (byte) 0);
 
-        PdfDictionary dic2 = new PdfDictionary();
-        dic2.put(PdfName.CONTENTS, new PdfString(outc).setHexWriting(true));
-        pdfSignatureAppearance.close(dic2);
+            PdfDictionary dic2 = new PdfDictionary();
+            dic2.put(PdfName.CONTENTS, new PdfString(outc).setHexWriting(true));
+            pdfSignatureAppearance.close(dic2);
 
-        OutputStream outputStream = new FileOutputStream(inputFilePath);
+            OutputStream outputStream = new FileOutputStream(filename);
 
-        byteArrayOutputStream.writeTo(outputStream);
+            byteArrayOutputStream.writeTo(outputStream);
 
-        byteArrayOutputStream.close();
-        outputStream.close();
+            byteArrayOutputStream.close();
+            outputStream.close();
+        }
     }
 }
